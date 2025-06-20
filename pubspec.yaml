@@ -45,6 +45,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  http: ^0.13.5 # Agrega esta línea 
+  flutter_secure_storage: ^9.0.0 # Agrega esta línea
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
