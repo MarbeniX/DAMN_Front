@@ -39,9 +39,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _handleCategoryTap(String category) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Seleccionaste: $category')),
-    );
+    switch (category.toLowerCase()) {
+      case 'personal':
+        Navigator.pushNamed(context, '/personal');
+        break;
+      case 'trabajo':
+        Navigator.pushNamed(context, '/work');
+        break;
+      case 'urgente':
+        Navigator.pushNamed(context, '/urgent');
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Categoría no reconocida: $category')),
+        );
+    }
   }
 
   Widget _buildCategoryCard(String title, IconData icon) {

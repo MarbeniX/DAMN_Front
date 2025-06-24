@@ -7,6 +7,9 @@ import 'screens/auth/confirm_account_screen.dart';
 import 'screens/auth/validate_token_screen.dart';
 import 'screens/auth/reset_password_screen.dart';
 import 'screens/app/home.dart';
+import 'screens/app//personal_lists_screen.dart';
+import 'screens/app/work_lists_screen.dart';
+import 'screens/app/urgent_lists_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +35,9 @@ class MyApp extends StatelessWidget {
         '/validate-token': (context) => const ValidateTokenScreen(),
         '/reset-password': (context) => const ResetPasswordScreen(),
         '/home': (context) => const HomeScreen(),
+        '/personal': (context) => const PersonalListsScreen(),
+        '/work': (context) => const WorkListsScreen(),
+        '/urgent': (context) => const UrgentListsScreen(),
       },
     );
   }
