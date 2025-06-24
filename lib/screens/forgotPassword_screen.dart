@@ -1,4 +1,5 @@
 // lib/screens/forgot_password_screen.dart
+import 'package:client/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -12,12 +13,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
-  void _handleSubmit() {
+  void _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
 
-      // Aquí deberías hacer la petición al backend
-      print('Enviar email de recuperación a: $email');
+      final result = await AuthService.sendPasswordResetEmail(email);
+      if (result['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'])),
+        );
+        Navigator.pushReplacementNamed(context, '/validate-token');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'])),
+        );
+      }
     }
   }
 

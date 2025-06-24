@@ -129,6 +129,16 @@ void _handleRegister() async {
                   onPressed: _handleRegister,
                   child: const Text('Registrarse'),
                 ),
+
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/confirm-account');
+                  },
+                  child: const Text(
+                    'Confirmar cuenta',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
               ],
             ),
           ),

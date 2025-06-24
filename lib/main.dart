@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/forgotPassword_screen.dart';
+import 'screens/confirm_account_screen.dart';
+import 'screens/validate_token_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +26,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/forgot-password': (context) => const ForgotPasswordScreen(),
+        '/confirm-account': (context) => const ConfirmAccountScreen(),
+        '/validate-token': (context) => const ValidateTokenScreen(),
       },
     );
   }
