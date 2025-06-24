@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:client/utils/token_storage.dart';
 import 'package:http/http.dart' as http;
 import '../config.dart';
 
 class AuthService {
+
   static Future<Map<String, dynamic>> createAccount(Map<String, dynamic> formData) async {
     try {
       final url = Uri.parse('$apiUrl/auth/create-account');
@@ -167,10 +169,10 @@ class AuthService {
         body: jsonEncode(formData),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
+        await TokenStorage.saveToken(response.body);
         return {
           'success': true,
           'message': 'Inicio de sesión exitoso',
-          'data': jsonDecode(response.body), // Devuelve los datos del usuario
         };
       } else {
         final errorResponse = jsonDecode(response.body);

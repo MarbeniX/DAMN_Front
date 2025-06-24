@@ -1,11 +1,12 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
-import 'screens/register_screen.dart';
-import 'screens/forgotPassword_screen.dart';
-import 'screens/confirm_account_screen.dart';
-import 'screens/validate_token_screen.dart';
-import 'screens//reset_password_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/register_screen.dart';
+import 'screens/auth/forgotPassword_screen.dart';
+import 'screens/auth/confirm_account_screen.dart';
+import 'screens/auth/validate_token_screen.dart';
+import 'screens/auth/reset_password_screen.dart';
+import 'screens/app/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/confirm-account': (context) => const ConfirmAccountScreen(),
         '/validate-token': (context) => const ValidateTokenScreen(),
         '/reset-password': (context) => const ResetPasswordScreen(),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }
