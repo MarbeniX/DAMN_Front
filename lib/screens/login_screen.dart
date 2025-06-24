@@ -1,3 +1,4 @@
+import 'package:client/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,11 +13,27 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _handleLogin() {
+  void _handleLogin() async {
     if(_formKey.currentState!.validate()){
       final email = _emailController.text;
       final password = _passwordController.text;
-      print('Email: $email, Password: $password');
+
+      final formData = {
+        'email': email,
+        'password': password
+      };
+
+      final response = await AuthService.login(formData);
+      if (response['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message'])),
+        );
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message'])),
+        );
+      }
     }
   }
 

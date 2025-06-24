@@ -35,7 +35,7 @@ void _handleRegister() async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result['message'])), // Muestra el mensaje de éxito del service
       );
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/confirm-account');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result['message'])), // Muestra el mensaje de error (del backend o de conexión)
@@ -128,16 +128,6 @@ void _handleRegister() async {
                 ElevatedButton(
                   onPressed: _handleRegister,
                   child: const Text('Registrarse'),
-                ),
-
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/confirm-account');
-                  },
-                  child: const Text(
-                    'Confirmar cuenta',
-                    style: TextStyle(color: Colors.blue),
-                  ),
                 ),
               ],
             ),

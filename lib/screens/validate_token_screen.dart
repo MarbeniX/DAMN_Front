@@ -27,7 +27,11 @@ class _ValidateTokenScreenState extends State<ValidateTokenScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['message'])),
         );
-        Navigator.pushReplacementNamed(context, '/reset-password');
+        Navigator.pushReplacementNamed(
+          context,
+          '/reset-password',
+          arguments: token,
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['message'])),

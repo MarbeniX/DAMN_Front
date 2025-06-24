@@ -15,7 +15,6 @@ class AuthService {
         return {
           'success': true,
           'message': 'Cuenta creada exitosamente', // Mensaje por defecto para éxito
-          'data': jsonDecode(response.body), // Datos de la respuesta del backend
         };
       } else {
         final errorResponse = jsonDecode(response.body);
@@ -47,7 +46,6 @@ class AuthService {
         return {
           'success': true,
           'message': 'Cuenta confirmada exitosamente',
-          'data': jsonDecode(response.body),
         };
       } else {
         final errorResponse = jsonDecode(response.body);
@@ -110,7 +108,69 @@ class AuthService {
         return {
           'success': true,
           'message': 'Token validado exitosamente',
-          'data': jsonDecode(response.body),
+        };
+      } else {
+        final errorResponse = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': errorResponse['message'] ?? 'Error desconocido del servidor',
+          'statusCode': response.statusCode,
+          'errorDetails': errorResponse,
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Error en el servidor.',
+        'error': e.toString(),
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> resetPassword(String token, dynamic formData) async {
+    try {
+      final url = Uri.parse('$apiUrl/auth/update-password/$token');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({ 'password': formData['password'], 'passwordMatch': formData['passwordMatch'] }),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return {
+          'success': true,
+          'message': 'Contraseña actualizada exitosamente',
+        };
+      } else {
+        final errorResponse = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': errorResponse['message'] ?? 'Error desconocido del servidor',
+          'statusCode': response.statusCode,
+          'errorDetails': errorResponse,
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'No se pudo conectar al servidor. Inténtalo de nuevo.',
+        'error': e.toString(),
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> login(Map<String, dynamic> formData) async {
+    try {
+      final url = Uri.parse('$apiUrl/auth/login');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(formData),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return {
+          'success': true,
+          'message': 'Inicio de sesión exitoso',
+          'data': jsonDecode(response.body), // Devuelve los datos del usuario
         };
       } else {
         final errorResponse = jsonDecode(response.body);
