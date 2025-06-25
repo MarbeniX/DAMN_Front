@@ -41,7 +41,6 @@ class CreateTaskButton extends StatelessWidget{
     String selectedRepeatKey = repeatOptions.keys.first; // por defecto
     String selectedPriorityKey = priorityOptions.keys.first; // por defecto
     bool isFavorite = false;
-    bool isCompleted = false;
 
   showDialog(
     context: context,
@@ -92,9 +91,8 @@ class CreateTaskButton extends StatelessWidget{
                             'description': description,
                             'repeat': selectedRepeatKey,
                             'priority': selectedPriorityKey,
-                            'isFavorite': isFavorite,
+                            'favorite': isFavorite,
                           };
-                          print('Form Data: $formData'); // Debugging
                           final response = await TaskService.createTask(formData, listId);
                           if (response['success']) {
                             ScaffoldMessenger.of(context).showSnackBar(
