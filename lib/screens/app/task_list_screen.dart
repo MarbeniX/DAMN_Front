@@ -2,6 +2,7 @@ import 'package:client/services/task_service.dart';
 import 'package:client/widgets/delete_list_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:client/widgets/create_task_form.dart';
+import 'package:client/widgets/update_task_form.dart';
 
 class TaskListScreen extends StatefulWidget {
   final String listId;
@@ -98,12 +99,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Widget _buildTaskCard(Map<String, dynamic> task) {
     return InkWell(
-      onTap: () {
-      },
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
                 icon: Icon(
@@ -115,23 +115,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   _fetchTasks();
                 },
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  task['description'] ?? 'Sin descripción',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-              Text(
-                task['repeat'] ?? 'Sin repetición',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                task['priority'] ?? 'Sin prioridad',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 12),
               IconButton(
                 onPressed: () async {
                   await TaskService.toggleCompleted(task['_id'], widget.listId, !task['completed']);
@@ -142,6 +125,32 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   color: task['completed'] == true ? Colors.blue : Colors.grey,
                 ),
               ),
+              Expanded(
+                child: Text(
+                  task['description'] ?? 'Sin descripción',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                ),
+                Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                  Text(
+                    task['priority'] ?? 'Sin prioridad',
+                    style: const TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    task['repeat'] ?? 'Sin repetición',
+                    style: const TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 4),
+                  ],
+                ),
+                ),
+              const SizedBox(width: 12),
               IconButton(
                 onPressed: () {
                   showDialog(
@@ -154,6 +163,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   );
                 },
                 icon: const Icon(Icons.delete, color: Colors.red),
+              ),
+              UpdateTaskButton(
+                listId: widget.listId,
+                taskData: task,
+                onTaskUpdated: _fetchTasks,
               )
             ],
           ),

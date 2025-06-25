@@ -130,4 +130,34 @@ class TaskService {
       return 'No se pudo conectar al servidor. Inténtalo de nuevo.';
     }
   }
+
+  static Future<Map<String, dynamic>> updateTask(
+    String taskId,
+    String listId,
+    Map<String, dynamic> updateData,
+  ) async {
+    try {
+      final token = await TokenStorage.getToken();
+      final url = Uri.parse('$apiUrl/lists/$listId/tasks/$taskId');
+      final response = await http.patch(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(updateData),
+      );
+      if (response.statusCode == 200) {
+        return {'success': true, 'message': 'Tarea actualizada exitosamente'};
+      } else {
+        return {'success': false, 'message': 'Error al actualizar la tarea'};
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'No se pudo conectar al servidor. Inténtalo de nuevo.',
+        'error': e.toString(),
+      };
+    }
+  }
 }
