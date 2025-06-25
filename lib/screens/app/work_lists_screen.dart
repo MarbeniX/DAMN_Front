@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:client/services/list_service.dart';
 import 'package:client/widgets/create_list_form.dart';
 
-class WorkListsScreen extends StatelessWidget {
+class WorkListsScreen extends StatefulWidget {
   const WorkListsScreen({super.key});
+
+  @override
+  State<WorkListsScreen> createState() => _WorkListsScreenState();
+}
+
+class _WorkListsScreenState extends State<WorkListsScreen> {
+  List<Map<String, dynamic>> workLists = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLists();
+  }
+
+  Future<void> _fetchLists() async {
+    final lists = await ListService.getListsByCategory('work');
+    setState(() {
+      workLists = lists;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +33,42 @@ class WorkListsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            CreateListButton(category: 'WORK',),
-            SizedBox(height: 24),
+          children: [
+            CreateListButton(
+              category: 'WORK',
+              onListCreated: _fetchLists, // <- Recarga listas al crear una nueva
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: workLists.isEmpty
+                  ? const Center(child: Text('No hay listas'))
+                  : ListView.builder(
+                      itemCount: workLists.length,
+                      itemBuilder: (context, index) {
+                        final list = workLists[index];
+                        return Card(
+                          child: ListTile(
+                            title: Text(list['listName'] ?? 'Sin nombre'),
+                            subtitle: Text(list['description'] ?? ''),
+                            leading: CircleAvatar(
+                              backgroundColor: Color(
+                                _hexToColor(list['listColor'] ?? '#808080'),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  int _hexToColor(String hex) {
+    hex = hex.replaceAll('#', '');
+    if (hex.length == 6) hex = 'FF$hex';
+    return int.parse(hex, radix: 16);
   }
 }

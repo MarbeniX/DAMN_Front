@@ -42,4 +42,26 @@ class ListService {
       };
     }
   }
+
+  static Future<List<Map<String, dynamic>>> getListsByCategory(String category) async {
+    try {
+      final token = await TokenStorage.getToken();
+      final url = Uri.parse('$apiUrl/lists/category/$category');
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((item) => item as Map<String, dynamic>).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return [];
+    }
+  }
 }
