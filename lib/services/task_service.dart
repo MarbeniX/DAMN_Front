@@ -109,4 +109,25 @@ class TaskService {
       };
     }
   }
+
+  static Future<String> deleteTask(String taskId, String listId) async {
+    try {
+      final token = await TokenStorage.getToken();
+      final url = Uri.parse('$apiUrl/lists/$listId/tasks/$taskId');
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return 'Tarea eliminada exitosamente';
+      } else {
+        return 'Error al eliminar la tarea';
+      }
+    } catch (e) {
+      return 'No se pudo conectar al servidor. Inténtalo de nuevo.';
+    }
+  }
 }

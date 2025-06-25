@@ -1,4 +1,5 @@
 import 'package:client/services/task_service.dart';
+import 'package:client/widgets/delete_list_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:client/widgets/create_task_form.dart';
 
@@ -96,50 +97,66 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   Widget _buildTaskCard(Map<String, dynamic> task) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                task['favorite'] == true ? Icons.favorite : Icons.favorite_border,
-                color: task['favorite'] == true ? Colors.red : Colors.grey,
+    return InkWell(
+      onTap: () {
+      },
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  task['favorite'] == true ? Icons.favorite : Icons.favorite_border,
+                  color: task['favorite'] == true ? Colors.red : Colors.grey,
+                ),
+                onPressed: () async {
+                  await TaskService.toggleFavorite(task['_id'], widget.listId, !task['favorite']);
+                  _fetchTasks();
+                },
               ),
-              onPressed: () async {
-                await TaskService.toggleFavorite(task['_id'], widget.listId, !task['favorite']);
-                _fetchTasks();
-              },
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                task['description'] ?? 'Sin descripción',
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  task['description'] ?? 'Sin descripción',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+              Text(
+                task['repeat'] ?? 'Sin repetición',
                 style: const TextStyle(fontSize: 16),
               ),
-            ),
-            Text(
-              task['repeat'] ?? 'Sin repetición',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(width: 50),
-            Text(
-              task['priority'] ?? 'Sin prioridad',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(width: 50),
-            IconButton(
-              onPressed: () async {
-                await TaskService.toggleCompleted(task['_id'], widget.listId, !task['completed']);
-                _fetchTasks();
-              },
-              icon: Icon(
-                task['completed'] == true ? Icons.check_circle : Icons.circle,
-                color: task['completed'] == true ? Colors.blue : Colors.grey,
-                size: 16,
+              const SizedBox(width: 12),
+              Text(
+                task['priority'] ?? 'Sin prioridad',
+                style: const TextStyle(fontSize: 16),
               ),
-            ),
-          ],
+              const SizedBox(width: 12),
+              IconButton(
+                onPressed: () async {
+                  await TaskService.toggleCompleted(task['_id'], widget.listId, !task['completed']);
+                  _fetchTasks();
+                },
+                icon: Icon(
+                  task['completed'] == true ? Icons.check_circle : Icons.circle,
+                  color: task['completed'] == true ? Colors.blue : Colors.grey,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => DeleteListDialog(
+                      taskId: task['_id'],
+                      taskListId: widget.listId,
+                      onDeleted: _fetchTasks,
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.delete, color: Colors.red),
+              )
+            ],
+          ),
         ),
       ),
     );
