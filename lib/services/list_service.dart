@@ -1,12 +1,19 @@
 import 'dart:convert';
 import 'package:client/utils/token_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../config.dart';
 
 class ListService {
   static Future<Map<String, dynamic>> createList(Map<String, dynamic> formData) async {
     try {
       final token = await TokenStorage.getToken();
+      String? userId;
+      if (token != null && token.isNotEmpty) {
+        final decodedToken = JwtDecoder.decode(token);
+        userId = decodedToken['id'];
+      }
+
       final url = Uri.parse('$apiUrl/lists/');
       final response = await http.post(
         url,
@@ -14,9 +21,15 @@ class ListService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({'name': formData['name']}),
+        body: jsonEncode({
+          'listName': formData['listName'],
+          'description': formData['description'],
+          'listColor': formData['listColor'] ?? '#FFFFFF', 
+          'category': formData['category'], // Asegúrate de que categoryList esté definido
+          'owner': [userId], // Asegúrate de que userId esté definido
+        }),
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         return {'success': true, 'message': 'Lista creada exitosamente'};
       } else {
         return {'success': false, 'message': 'Error al crear la lista'};

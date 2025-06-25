@@ -13,9 +13,8 @@ class PersonalListsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            CreateListButton(),
+            CreateListButton(category: 'PERSONAL',),
             SizedBox(height: 24),
-            Text('Aquí se mostrarán las listas...'),
           ],
         ),
       ),

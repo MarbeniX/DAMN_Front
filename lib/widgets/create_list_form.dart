@@ -13,11 +13,21 @@ const Map<String, String> colorList = {
   'GRAY': '#808080',
 };
 
+const Map<String, String> categoryList = {
+  'PERSONAL': 'personal',
+  'WORK': 'work',
+  'URGENT': 'urgent',
+};
+
 class CreateListButton extends StatelessWidget {
-  
+  final String category;
   final VoidCallback? onListCreated;
 
-  const CreateListButton({super.key, this.onListCreated});
+  const CreateListButton({
+    super.key, 
+    required this.category,
+    this.onListCreated,
+  });
 
   // Helper to convert hex string like "#FF0000" to int for Color
   static int _hexToColor(String hex) {
@@ -40,7 +50,6 @@ class CreateListButton extends StatelessWidget {
     final _formKey = GlobalKey<FormState>();
     final _nameController = TextEditingController();
     final _descriptionController = TextEditingController();
-
     String selectedColorKey = colorList.keys.first; // por defecto
 
     showDialog(
@@ -52,18 +61,32 @@ class CreateListButton extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
+                TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Nombre'),
-                validator: (value) =>
-                    value == null || value.trim().isEmpty ? 'Requerido' : null,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'El nombre es requerido';
+                  }
+                  if (value.trim().length > 20) {
+                    return 'Máximo 20 caracteres';
+                  }
+                    return null;
+                },
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Descripción'),
-                validator: (value) =>
-                    value == null || value.trim().isEmpty ? 'Requerido' : null,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'La descripción es requerida';
+                  }
+                  if (value.trim().length > 100) {
+                    return 'Máximo 100 caracteres';
+                  }
+                  return null;
+                }
               ),
               DropdownButtonFormField<String>(
                 value: selectedColorKey,
@@ -96,7 +119,7 @@ class CreateListButton extends StatelessWidget {
             ],
           ),
         ),
-        
+
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -106,10 +129,12 @@ class CreateListButton extends StatelessWidget {
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 final formData = {
-                  'name': _nameController.text.trim(),
+                  'listName': _nameController.text.trim(),
                   'description': _descriptionController.text.trim(),
+                  'listColor': colorList[selectedColorKey], // Default to white if not found}
+                  'category': categoryList[category], // Añade la categoría
                 };
-
+                print('Form Data: $formData');
                 final response = await ListService.createList(formData);
 
                 ScaffoldMessenger.of(context).showSnackBar(
