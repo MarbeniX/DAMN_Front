@@ -3,6 +3,7 @@ import 'package:client/widgets/update_list_form.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/list_service.dart';
 import 'package:client/widgets/create_list_form.dart';
+import 'package:client/widgets/delete_list_dialog.dart';
 
 class PersonalListsScreen extends StatefulWidget {
   const PersonalListsScreen({super.key});
@@ -57,9 +58,27 @@ class _PersonalListsScreenState extends State<PersonalListsScreen> {
                                 _hexToColor(list['listColor'] ?? '#808080'),
                               ),
                             ),
-                            trailing: EditListButton(
-                              list: list,
-                              onListUpdated: _fetchLists, // Recarga listas al editar
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                EditListButton(
+                                  list: list,
+                                  onListUpdated: _fetchLists, // Recarga listas al editar
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.close, color: Colors.red),
+                                  tooltip: 'Eliminar lista',
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => DeleteListDialog(
+                                        listId: list['_id'],
+                                        onDeleted: _fetchLists, // callback opcional para refrescar
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                             onTap: () {
                               Navigator.push(
