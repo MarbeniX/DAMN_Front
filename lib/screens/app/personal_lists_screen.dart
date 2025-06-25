@@ -1,3 +1,5 @@
+import 'package:client/screens/app/task_list_screen.dart';
+import 'package:client/widgets/update_list_form.dart';
 import 'package:flutter/material.dart';
 import 'package:client/services/list_service.dart';
 import 'package:client/widgets/create_list_form.dart';
@@ -55,6 +57,23 @@ class _PersonalListsScreenState extends State<PersonalListsScreen> {
                                 _hexToColor(list['listColor'] ?? '#808080'),
                               ),
                             ),
+                            trailing: EditListButton(
+                              list: list,
+                              onListUpdated: _fetchLists, // Recarga listas al editar
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => TaskListScreen(
+                                    listId: list['_id'] ?? '',
+                                    listName: list['listName'] ?? 'Sin nombre',
+                                    listColor: Color(_hexToColor(list['listColor'])),
+                                    listDescription: list['description'] ?? 'Sin descripción',
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },

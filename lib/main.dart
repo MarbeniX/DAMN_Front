@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/personal': (context) => const PersonalListsScreen(),
         '/work': (context) => const WorkListsScreen(),
         '/urgent': (context) => const UrgentListsScreen(),
+        '/task-list': (context) => const Placeholder()
       },
     );
   }

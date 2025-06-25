@@ -64,4 +64,81 @@ class ListService {
       return [];
     }
   }
+
+  static Future<void> deleteList(String listId) async {
+    try {
+      final token = await TokenStorage.getToken();
+      final url = Uri.parse('$apiUrl/lists/$listId');
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        print('Lista eliminada exitosamente');
+      } else {
+        print('Error al eliminar la lista');
+      }
+    } catch (e) {
+      print('No se pudo conectar al servidor. Inténtalo de nuevo.');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateList(String listId, Map<String, dynamic> formData) async {
+    try {
+      final token = await TokenStorage.getToken();
+      final url = Uri.parse('$apiUrl/lists/$listId');
+      final response = await http.patch(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'listName': formData['listName'],
+          'description': formData['description'],
+          'listColor': formData['listColor'] ?? '#FFFFFF', 
+          'category': formData['category'], // Asegúrate de que categoryList esté definido
+        }),
+      );
+      if (response.statusCode == 200) {
+        return {'success': true, 'message': 'Lista actualizada exitosamente'};
+      } else {
+        return {'success': false, 'message': 'Error al actualizar la lista'};
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'No se pudo conectar al servidor. Inténtalo de nuevo.',
+        'error': e.toString(), // Detalle técnico del error
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> getListById(String listId) async {
+    try {
+      final token = await TokenStorage.getToken();
+      final url = Uri.parse('$apiUrl/lists/$listId');
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        return {'success': false, 'message': 'Error al obtener la lista'};
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'No se pudo conectar al servidor. Inténtalo de nuevo.',
+        'error': e.toString(), // Detalle técnico del error
+      };
+    }
+  }
 }
